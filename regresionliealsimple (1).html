@@ -1,0 +1,66 @@
+<html>
+
+    <head>
+        <title>Regresión lineal Simple</title>
+    </head>
+    <body>
+        <script>
+            var datosEntreno = [
+                { input: [189], output: [200] },
+                { input: [200], output: [300] },
+                { input: [220], output: [300] },
+                { input: [230], output: [350] },
+                { input: [240], output: [330] },
+                { input: [260], output: [340] },
+                { input: [270], output: [400] },
+                { input: [275], output: [500] },
+                { input: [290], output: [550] },
+                { input: [300], output: [520] },
+                { input: [330], output: [550] },
+            ];         
+
+            var regresion = new RegresionSimple(datosEntreno);
+            regresion.train();
+            console.log(regresion.pesos)
+            console.log(regresion.prev(400));
+            
+            function RegresionSimple(datosEntreno){
+                this.datosEntreno = datosEntreno;
+                this.pesos =[];
+
+                this.train = function (){
+                    var n = this.datosEntreno.lenght;
+                    var mediaY = 0;
+                    var mediaX = 0;
+                    var mediaX2 = 0;
+                    var mediaXY = 0;
+
+                    var sumatorioX = 0;
+                    var sumatorioY = 0;
+                    var sumatorioX2 = 0;
+                    var sumatorioXY = 0;
+
+                    this.datosEntreno.forEach(element => {
+                        sumatorioX = sumatorioX + element.input[0];
+                        sumatorioY = sumatorioY + element.input[0];
+                        sumatorioX2 = sumatorioX2 + Math.pow(element.input[0],2)
+                        sumatorioXY = sumatorioXY + element.input[0];
+                    });
+                    mediaY = sumatorioY/n;
+                    mediaX = sumatorioX/n;
+                    mediaX2 = sumatorioX2/n;
+                    mediaXY = sumatorioXY/n;
+
+                    var m = (mediaY - (mediaXY/mediaX)) / (mediaX - (mediaX2/mediaX) );
+                    var b = mediaY - m * mediaX;
+
+                    this.pesos[0] = m;
+                    this.pesos[1]= b;
+                }
+                this.prev = function(x){
+                    return this.pesos[0] * x + this.pesos[1];
+                }
+            }
+        </script>
+    </body>
+</html>

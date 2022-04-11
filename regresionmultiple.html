@@ -1,0 +1,71 @@
+<html>
+
+    <head>
+        <title>Regresión lineal multiple</title>
+    </head>
+    <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.6.1/math.js"></script>
+    
+        <script>
+            var datosEntreno = [
+                { input: [80,2,100], output: [400] },
+                { input: [60,2,900], output: [320] },
+                { input: [90,3,250], output: [510] },
+                { input: [55,2,350], output: [300] },
+                { input: [30,1,520], output: [250] },
+                { input: [80,4,90], output: [430] },
+                { input: [65,2,700], output: [250] },
+                { input: [120,3,400], output: [492] },
+                { input: [100,4,800], output: [355] },
+                { input: [75,1,650], output: [200] },
+            ];
+
+            var regresionMultiple = new RegresionMultiple(datosEntreno);
+            regresionMultiple.train();
+
+            var precio = regresionMultiple.predecir([
+                120,
+                5,
+                60
+            ]);
+
+            console.log(precio);
+
+
+
+            function RegresionMultiple(datosEntreno) {
+                this.datosEntreno = datosEntreno;
+                this.pesos = [];
+
+
+                this.train = function () {
+                    var matrixY = [];
+                    var matrixX = [];
+                    this.datosEntreno.forEach(element => {
+                        matrixY.push(element.output[0]); 
+                        element.input.unshift(1);
+                        matrixX.push(element.input);
+                    });
+
+                    var mxt = math.transpose(matrixX);
+                    var mxtporx = math.multiply(mxt,matrixX );
+
+                    var mxtporxinv = math.inv(mxtporx);
+                    var xtpory = math.multiply(mxt,matrixY );
+
+                    this.pesos =  math.multiply(mxtporxinv,xtpory ); 
+                }
+
+                this.predecir = function (xArray) {
+                    var value = this.pesos[0];
+                    for (let index = 0; index < xArray.length; index++) {
+                        var prov = this.pesos[index + 1] * xArray[index];
+                        value = value + prov;
+                    }
+                    return value;
+                }
+            }
+
+
+        </script>
+    </body>
